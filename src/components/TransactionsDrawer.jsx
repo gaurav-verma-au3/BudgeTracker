@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Modal, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {closeTransactionsDrawer} from '../redux/drawersStatus';
-import Chips from './Chips';
 import useTheme from '../hooks/useTheme';
 import NormalInput from './InputBoxes/NormalInput';
 import Form from './Form';
@@ -18,6 +17,7 @@ import {dispatchSnackBar} from '../utils/snackbar';
 import {TransactionsQueries} from '../database/models/Transactions/Transactions.queries';
 import Loader from './Loader';
 import Success from './Success';
+import Chips from './Chips';
 
 let typeValueKey = 'value';
 let summaryValueKey = 'value';

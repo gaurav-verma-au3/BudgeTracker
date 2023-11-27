@@ -1,9 +1,7 @@
-import React, {useEffect, useRef} from 'react';
-import {Animated, View} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 import styled from 'styled-components/native';
-import {categoryRules} from 'utils/categoryRulesSchema';
 import {normalize} from 'utils/normalize';
-import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 import useTheme from 'hooks/useTheme';
 
 const Chips = ({items, onPress, selected, valueField}) => {

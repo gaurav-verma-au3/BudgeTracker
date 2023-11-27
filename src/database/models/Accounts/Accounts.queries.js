@@ -26,14 +26,12 @@ const transactAccount = async (_id, amount, type) => {
   if (realmInstance)
     try {
       const doc = queryHandler.filtered(`_id == $0`, _id)[0];
-      console.log({_id, amount, type, doc});
       const result = await realmInstance.write(() => {
         doc.currentBalance =
           type === TRANSACTION_TYPES_ENUM.CREDIT
             ? doc.currentBalance + amount
             : doc.currentBalance - amount;
       });
-      console.log({result: JSON.stringify(result)});
       return true;
     } catch (error) {
       console.log({error, location: 'queries/debitAccount'});
