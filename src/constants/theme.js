@@ -56,7 +56,7 @@ const common = {
 };
 export const darkTheme = {
   colors: {
-    primary: '#7F3DFF',
+    primary: '#a35905',
     loginText: '#FCFCFC',
     black: '#000000',
     white: '#ffffff',
@@ -65,7 +65,7 @@ export const darkTheme = {
 };
 export const lightTheme = {
   colors: {
-    primary: '#7F3DFF',
+    primary: '#a35905',
     loginText: '#FCFCFC',
     black: '#000000',
     white: '#ffffff',

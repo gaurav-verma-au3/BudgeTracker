@@ -8,16 +8,18 @@ export default class extends Realm.Object {
     properties: {
       _id: 'objectId',
       amount: {type: 'double'},
+      charges: {type: 'double'},
       source_ac: {type: 'objectId'},
       destination_ac: {type: 'objectId'},
       date: {type: 'int'},
     },
   };
   static generate(transfer) {
-    const {amount = 0, source_ac, destination_ac, date} = transfer;
+    const {amount = 0, charges = 0, source_ac, destination_ac, date} = transfer;
     return {
       _id: new Realm.BSON.ObjectId(),
       amount: formatAmount(amount),
+      charges: formatAmount(charges),
       source_ac,
       destination_ac,
       date,

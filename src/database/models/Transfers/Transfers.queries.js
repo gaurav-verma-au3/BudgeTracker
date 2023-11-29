@@ -18,7 +18,7 @@ const addTransfer = async transfer => {
       });
       const transactAccountDebit = await AccountsQueries.transactAccount(
         transfer.source_ac,
-        transfer.amount,
+        transfer.amount + transfer.charges,
         TRANSACTION_TYPES_ENUM.DEBIT,
       );
       const transactAccountCredit = await AccountsQueries.transactAccount(

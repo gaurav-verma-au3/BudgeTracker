@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {closeTransactionsDrawer} from '../redux/drawersStatus';
+import {
+  closeTransactionsDrawer,
+  openAccountsDrawer,
+} from '../redux/drawersStatus';
 import useTheme from '../hooks/useTheme';
 import NormalInput from './InputBoxes/NormalInput';
 import Form from './Form';
@@ -32,7 +35,7 @@ const TransactionsDrawer = () => {
   const [summary, setSummary] = useState({});
   const [account, setAccount] = useState({});
   const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('0.00');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
@@ -54,20 +57,37 @@ const TransactionsDrawer = () => {
         date.getTime(),
         account._id,
       );
+
       if (success) {
         const transaction = await TransactionsQueries.addTransaction(result);
         if (transaction) {
           setAdded(true);
           setLoading(false);
         } else {
-          dispatchSnackBar({text: `Ooops that wasn't supposed to happen!!!`});
           setLoading(false);
+          dispatchSnackBar({text: `Ooops that wasn't supposed to happen!!!`});
         }
+      } else {
+        setLoading(false);
       }
     } catch (err) {
       setLoading(false);
       dispatchSnackBar({text: `Ooops that wasn't supposed to happen!!!`});
       console.log({err, location: 'TransactionsDrawer/handleAddTransaction'});
+    }
+  };
+  const handleOpenAccountsDrawer = () => {
+    dispatch(openAccountsDrawer());
+  };
+
+  const handleAmountFocus = e => {
+    if (amount === '0.00') {
+      setAmount('');
+    }
+  };
+  const handleAmountBlur = e => {
+    if (amount === '') {
+      setAmount('0.00');
     }
   };
 
@@ -76,10 +96,11 @@ const TransactionsDrawer = () => {
     setAccount({});
     setSummary({});
     setType({});
-    setAmount('');
+    setAmount('0.00');
   }, [transactionsDrawer]);
 
   useEffect(() => {
+    console.log({added});
     let timeout;
     if (added) {
       timeout = setTimeout(() => {
@@ -104,7 +125,7 @@ const TransactionsDrawer = () => {
         style={{flex: 1, width: '100%'}}
         onPress={handleCloseTransactionsDrawer}>
         <TouchableWithoutFeedback>
-          <Form title={'Add Transaction'} heightPercentage={64}>
+          <Form title={'Add Transaction'} heightPercentage={74}>
             {loading ? (
               <Loader />
             ) : added ? (
@@ -112,6 +133,7 @@ const TransactionsDrawer = () => {
             ) : (
               <>
                 <Chips
+                  placeholder={'Transaction Type'}
                   selected={type}
                   onPress={setType}
                   valueField={typeValueKey}
@@ -119,6 +141,7 @@ const TransactionsDrawer = () => {
                 />
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <Chips
+                  placeholder={'Transaction Summary'}
                   selected={summary}
                   onPress={setSummary}
                   valueField={summaryValueKey}
@@ -128,6 +151,9 @@ const TransactionsDrawer = () => {
                 <Chips
                   selected={account}
                   onPress={setAccount}
+                  placeholder={'Source Account'}
+                  emptyMessage={'No Accounts Add Now'}
+                  onEmptyPress={handleOpenAccountsDrawer}
                   items={accounts.map(v => ({
                     ...v,
                     label: `${v.type}/${v.name}`,
@@ -137,6 +163,8 @@ const TransactionsDrawer = () => {
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <NormalInput
                   placeholder="Amount"
+                  onFocus={handleAmountFocus}
+                  onBlur={handleAmountBlur}
                   inputMode="numeric"
                   value={amount}
                   onChangeText={setAmount}

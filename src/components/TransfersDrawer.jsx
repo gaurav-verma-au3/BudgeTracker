@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Modal, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {closeTransfersDrawer} from '../redux/drawersStatus';
+import {closeTransfersDrawer, openAccountsDrawer} from '../redux/drawersStatus';
 import Chips from './Chips';
 import useTheme from '../hooks/useTheme';
 import NormalInput from './InputBoxes/NormalInput';
@@ -27,7 +27,8 @@ const TransfersDrawer = () => {
   const [source_ac, set_source_ac] = useState({});
   const [destination_ac, set_destination_ac] = useState({});
   const [date, setDate] = useState(new Date());
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState('0.00');
+  const [charges, setCharges] = useState('0.00');
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -37,11 +38,38 @@ const TransfersDrawer = () => {
     dispatch(closeTransfersDrawer());
   };
 
+  const handleOpenAccountsDrawer = () => {
+    dispatch(openAccountsDrawer());
+  };
+
+  const handleAmountFocus = e => {
+    if (amount === '0.00') {
+      setAmount('');
+    }
+  };
+  const handleAmountBlur = e => {
+    if (amount === '') {
+      setAmount('0.00');
+    }
+  };
+
+  const handleChargesFocus = e => {
+    if (charges === '0.00') {
+      setCharges('');
+    }
+  };
+  const handleChargesBlur = e => {
+    if (charges === '') {
+      setCharges('0.00');
+    }
+  };
+
   const handleAddTransfer = async () => {
     try {
       setLoading(true);
       const {success, result} = validateTransfer(
         amount,
+        charges,
         source_ac._id,
         destination_ac._id,
         date.getTime(),
@@ -55,6 +83,8 @@ const TransfersDrawer = () => {
           dispatchSnackBar({text: `Ooops that wasn't supposed to happen!!!`});
           setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -67,7 +97,8 @@ const TransfersDrawer = () => {
     setDate(new Date());
     set_destination_ac({});
     set_source_ac({});
-    setAmount('');
+    setAmount('0.00');
+    setCharges('0.00');
   }, [transfersDrawer]);
 
   useEffect(() => {
@@ -92,7 +123,7 @@ const TransfersDrawer = () => {
         style={{flex: 1, width: '100%'}}
         onPress={handleCloseTransfersDrawer}>
         <TouchableWithoutFeedback>
-          <Form title={'Add Transfer'} heightPercentage={60}>
+          <Form title={'Add Transfer'} heightPercentage={65}>
             {loading ? (
               <Loader />
             ) : added ? (
@@ -100,6 +131,9 @@ const TransfersDrawer = () => {
             ) : (
               <>
                 <Chips
+                  placeholder={'Source Account'}
+                  emptyMessage={'No Accounts Add Now'}
+                  onEmptyPress={handleOpenAccountsDrawer}
                   selected={source_ac}
                   onPress={set_source_ac}
                   items={accounts.map(v => ({
@@ -110,6 +144,9 @@ const TransfersDrawer = () => {
                 />
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <Chips
+                  placeholder={'Destination Account'}
+                  emptyMessage={'No Accounts Add Now'}
+                  onEmptyPress={handleOpenAccountsDrawer}
                   selected={destination_ac}
                   onPress={set_destination_ac}
                   items={accounts.map(v => ({
@@ -121,9 +158,20 @@ const TransfersDrawer = () => {
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <NormalInput
                   placeholder="Amount"
+                  onFocus={handleAmountFocus}
+                  onBlur={handleAmountBlur}
                   inputMode="numeric"
                   value={amount}
                   onChangeText={setAmount}
+                />
+                <MT MT={theme.spacings.verticalScale.s4} />
+                <NormalInput
+                  onFocus={handleChargesFocus}
+                  onBlur={handleChargesBlur}
+                  placeholder="Charges"
+                  inputMode="numeric"
+                  value={charges}
+                  onChangeText={setCharges}
                 />
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <DateTimePicker

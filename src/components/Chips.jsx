@@ -1,10 +1,18 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components/native';
 import {normalize} from 'utils/normalize';
 import useTheme from 'hooks/useTheme';
 
-const Chips = ({items, onPress, selected, valueField}) => {
+const Chips = ({
+  items,
+  onPress,
+  selected,
+  valueField,
+  emptyMessage = '',
+  onEmptyPress = () => null,
+  ...props
+}) => {
   const theme = useTheme();
 
   const renderItem = ({item}) => {
@@ -22,10 +30,41 @@ const Chips = ({items, onPress, selected, valueField}) => {
       </ListItemContainer>
     );
   };
+  const renderEmpty = () => {
+    return (
+      <TouchableOpacity
+        onPress={onEmptyPress}
+        style={{
+          borderColor: theme.colors.loginText,
+          borderWidth: 1,
+          borderRadius: 100,
+          paddingVertical: normalize(5),
+          paddingHorizontal: normalize(15),
+        }}>
+        <Text
+          style={{
+            fontWeight: theme.fontWeight.w900,
+            color: props.error
+              ? theme.colors.loginText
+              : theme.colors.loginText,
+          }}>
+          {emptyMessage}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View>
+      <Text
+        style={{
+          fontWeight: theme.fontWeight.w600,
+          color: props.error ? theme.colors.loginText : theme.colors.loginText,
+        }}>
+        {props.placeholder}
+      </Text>
       <Cover
+        ListEmptyComponent={emptyMessage ? renderEmpty : null}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
         data={items}

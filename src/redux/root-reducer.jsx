@@ -4,11 +4,13 @@ import {persistReducer} from 'redux-persist';
 import {apiStatusReducer} from './api-status-reducer';
 import {userReducer} from './user';
 import {drawersStatusReducer} from './drawersStatus';
+import {themeColorReducer} from './themeColor';
 
 const combinedReducer = combineReducers({
   apiStatus: apiStatusReducer,
   user: userReducer,
   drawersStatus: drawersStatusReducer,
+  themeColor: themeColorReducer,
 });
 
 const rootReducer = (state, action) => {
@@ -23,7 +25,7 @@ const rootReducer = (state, action) => {
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user'],
+  whitelist: ['user', 'themeColor'],
 };
 
 export const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -2,7 +2,13 @@ import {stringLiteral, formatAmount} from 'utils/utilities';
 import {handleValidationError} from './errorHandler';
 import {checkByLength, validateAmount, validateObjectId} from './validators';
 
-export const validateTransfer = (amount, source_ac, destination_ac, date) => {
+export const validateTransfer = (
+  amount,
+  charges,
+  source_ac,
+  destination_ac,
+  date,
+) => {
   const isInvalid = {};
   const body = {};
 
@@ -10,6 +16,11 @@ export const validateTransfer = (amount, source_ac, destination_ac, date) => {
     body.amount = formatAmount(amount);
   } else {
     isInvalid.amount = 'Invalid Amount';
+  }
+  if (checkByLength(charges)) {
+    body.charges = formatAmount(charges);
+  } else {
+    isInvalid.charges = 'Invalid Charges';
   }
   if (new Date(date).getTime() > 0) {
     body.date = date;

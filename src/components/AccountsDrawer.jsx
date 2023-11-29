@@ -18,7 +18,7 @@ const AccountsDrawer = () => {
   const {accountsDrawer} = useSelector(state => state.drawersStatus);
   const [type, setType] = useState({});
   const [name, setName] = useState('');
-  const [currentBalance, setCurrentBalance] = useState('');
+  const [currentBalance, setCurrentBalance] = useState('0.00');
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const theme = useTheme();
@@ -29,6 +29,17 @@ const AccountsDrawer = () => {
   };
   const handleTypePress = t => {
     setType(t);
+  };
+
+  const handleAmountFocus = e => {
+    if (currentBalance === '0.00') {
+      setCurrentBalance('');
+    }
+  };
+  const handleAmountBlur = e => {
+    if (currentBalance === '') {
+      setCurrentBalance('0.00');
+    }
   };
 
   const handleAddAccount = async () => {
@@ -48,6 +59,8 @@ const AccountsDrawer = () => {
           dispatchSnackBar({text: `Ooops that wasn't supposed to happen!!!`});
           setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     } catch (err) {
       setLoading(false);
@@ -71,6 +84,12 @@ const AccountsDrawer = () => {
     };
   }, [added]);
 
+  useEffect(() => {
+    setName('');
+    setType({});
+    setCurrentBalance('0.00');
+  }, [accountsDrawer]);
+
   return (
     <Modal animationType="slide" visible={!!accountsDrawer} transparent={true}>
       <TouchableOpacity
@@ -78,7 +97,7 @@ const AccountsDrawer = () => {
         style={{flex: 1, width: '100%'}}
         onPress={handleCloseAccountsDrawer}>
         <TouchableWithoutFeedback>
-          <Form title={'Add Account'} heightPercentage={43}>
+          <Form title={'Add Account'} heightPercentage={47}>
             {loading ? (
               <Loader />
             ) : added ? (
@@ -86,6 +105,7 @@ const AccountsDrawer = () => {
             ) : (
               <>
                 <Chips
+                  placeholder={'Account Type'}
                   selected={type}
                   onPress={handleTypePress}
                   items={AccountTypes}
@@ -100,6 +120,8 @@ const AccountsDrawer = () => {
                 <MT MT={theme.spacings.verticalScale.s4} />
                 <NormalInput
                   placeholder="Current Balance"
+                  onBlur={handleAmountBlur}
+                  onFocus={handleAmountFocus}
                   value={currentBalance}
                   inputMode="numeric"
                   onChangeText={setCurrentBalance}

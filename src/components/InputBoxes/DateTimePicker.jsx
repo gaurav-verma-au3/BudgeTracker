@@ -43,6 +43,7 @@ const DateTimePicker = props => {
         }}>
         <Text
           style={{
+            fontWeight: theme.fontWeight.w600,
             color: props.error
               ? theme.colors.loginText
               : theme.colors.loginText,
@@ -98,6 +99,8 @@ const DateTimeInoutBox = styled.TextInput.attrs(props => ({
     props.error ? props.theme.colors.loginText : props.theme.colors.loginText};
   width: ${props => (props.width ? props.width : 85)}%;
   font-size: ${props => props.theme.fontSize.f12}px;
+  font-weight: ${props => props.theme.fontWeight.w600};
+
   padding: ${props => props.theme.spacings.verticalScale.s12}px
     ${props => props.theme.spacings.normalScale.s12}px;
 `;

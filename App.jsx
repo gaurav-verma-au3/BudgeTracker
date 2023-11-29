@@ -1,11 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {createContext, useEffect, useRef, useState} from 'react';
 import {
   NavigationContainer,
   useNavigationContainerRef,
@@ -37,6 +31,16 @@ import {PaperProvider} from 'react-native-paper';
 export const ScreenNameContext = createContext(null);
 
 const App = () => {
+  return (
+    <Provider store={store}>
+      <Main />
+    </Provider>
+  );
+};
+
+export default App;
+
+const Main = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const isReadyRef = useRef();
   const navigationRef = useNavigationContainerRef();
@@ -104,54 +108,50 @@ const App = () => {
           <RealmDebugger />
           <ScreenNameContext.Provider value={currentRoute}>
             <ThemeProvider theme={theme}>
-              <Provider store={store}>
-                <PaperProvider theme={theme}>
-                  <SafeAreaProvider>
-                    <View
+              <PaperProvider theme={theme}>
+                <SafeAreaProvider>
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingTop:
+                        Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+                      backgroundColor:
+                        statusBarColor(theme)[currentRoute]?.color || '#e3e3e3',
+                    }}>
+                    <SafeAreaView
                       style={{
-                        flex: 1,
-                        paddingTop:
-                          Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+                        flex: 0,
                         backgroundColor:
                           statusBarColor(theme)[currentRoute]?.color ||
                           '#e3e3e3',
-                      }}>
-                      <SafeAreaView
-                        style={{
-                          flex: 0,
-                          backgroundColor:
-                            statusBarColor(theme)[currentRoute]?.color ||
-                            '#e3e3e3',
-                        }}
-                      />
-                      <StatusBar
-                        barStyle={
-                          statusBarColor(theme)[currentRoute]?.contentStyle ||
-                          'dark-content'
-                        }
-                        backgroundColor={
-                          statusBarColor(theme)[currentRoute]?.color ||
-                          '#e3e3e3'
-                        }
-                      />
+                      }}
+                    />
+                    <StatusBar
+                      barStyle={
+                        statusBarColor(theme)[currentRoute]?.contentStyle ||
+                        'dark-content'
+                      }
+                      backgroundColor={
+                        statusBarColor(theme)[currentRoute]?.color || '#e3e3e3'
+                      }
+                    />
 
-                      <NavigationContainer
-                        fallback={<Text>Loading...</Text>}
-                        linking={linking}
-                        ref={navigationRef}
-                        onReady={() => {
-                          isReadyRef.current = true;
-                          setCurrentRoute(navigationRef.getCurrentRoute().name);
-                        }}
-                        onStateChange={async () => {
-                          setCurrentRoute(navigationRef.getCurrentRoute().name);
-                        }}>
-                        <RootNavigation navigationRef={navigationRef} />
-                      </NavigationContainer>
-                    </View>
-                  </SafeAreaProvider>
-                </PaperProvider>
-              </Provider>
+                    <NavigationContainer
+                      fallback={<Text>Loading...</Text>}
+                      linking={linking}
+                      ref={navigationRef}
+                      onReady={() => {
+                        isReadyRef.current = true;
+                        setCurrentRoute(navigationRef.getCurrentRoute().name);
+                      }}
+                      onStateChange={async () => {
+                        setCurrentRoute(navigationRef.getCurrentRoute().name);
+                      }}>
+                      <RootNavigation navigationRef={navigationRef} />
+                    </NavigationContainer>
+                  </View>
+                </SafeAreaProvider>
+              </PaperProvider>
             </ThemeProvider>
           </ScreenNameContext.Provider>
         </RealmProvider>
@@ -159,5 +159,3 @@ const App = () => {
     </AnimatedSplash>
   );
 };
-
-export default App;

@@ -6,22 +6,48 @@ const drawersStatusSlice = createSlice({
   initialState,
   reducers: {
     openTransactionsDrawer: (prevState, action) => {
-      return {...prevState, transactionsDrawer: true};
+      return {
+        transactionsDrawer: true,
+        transfersDrawer: false,
+        accountsDrawer: false,
+        colorPickerDrawer: false,
+      };
     },
     closeTransactionsDrawer: (prevState, action) => {
       return {...prevState, transactionsDrawer: false};
     },
     openTransfersDrawer: (prevState, action) => {
-      return {...prevState, transfersDrawer: true};
+      return {
+        transfersDrawer: true,
+        accountsDrawer: false,
+        transactionsDrawer: false,
+        colorPickerDrawer: false,
+      };
     },
     closeTransfersDrawer: (prevState, action) => {
       return {...prevState, transfersDrawer: false};
     },
     openAccountsDrawer: (prevState, action) => {
-      return {...prevState, accountsDrawer: true};
+      return {
+        accountsDrawer: true,
+        transfersDrawer: false,
+        transactionsDrawer: false,
+        colorPickerDrawer: false,
+      };
     },
     closeAccountsDrawer: (prevState, action) => {
       return {...prevState, accountsDrawer: false};
+    },
+    openColorPickerDrawer: (prevState, action) => {
+      return {
+        colorPickerDrawer: true,
+        accountsDrawer: false,
+        transfersDrawer: false,
+        transactionsDrawer: false,
+      };
+    },
+    closeColorPickerDrawer: (prevState, action) => {
+      return {...prevState, colorPickerDrawer: false};
     },
   },
 });
@@ -35,6 +61,8 @@ const {
   closeTransfersDrawer,
   openAccountsDrawer,
   closeAccountsDrawer,
+  openColorPickerDrawer,
+  closeColorPickerDrawer,
 } = drawersStatusSlice.actions;
 
 export {
@@ -44,5 +72,7 @@ export {
   closeTransfersDrawer,
   openAccountsDrawer,
   closeAccountsDrawer,
+  openColorPickerDrawer,
+  closeColorPickerDrawer,
   drawersStatusReducer,
 };

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, forwardRef, useImperativeHandle} from 'react';
 import styled from 'styled-components/native';
 import {normalize} from '../../utils/normalize';
 import {height, width} from '../../utils/device';
@@ -8,6 +8,7 @@ import useTheme from '../../hooks/useTheme';
 import {useDispatch} from 'react-redux';
 import {
   openAccountsDrawer,
+  openColorPickerDrawer,
   openTransactionsDrawer,
   openTransfersDrawer,
 } from '../../redux/drawersStatus';
@@ -24,25 +25,10 @@ const circleSizeExpanded = normalize(width / 2);
 const buttonSizeCollapsed = 0;
 const buttonSizeExpanded = normalize(width / 6);
 
-const AddButton = () => {
+const AddButton = forwardRef(({expanded, setExpanded}, ref) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const widthAnimation = useRef(new Animated.Value(0)).current;
-  const [expanded, setExpanded] = useState(false);
-  const handlePress = () => {
-    if (expanded) {
-      collapse();
-    } else {
-      handleOpenTransactions();
-    }
-  };
-  const handleLongPress = () => {
-    if (expanded) {
-      collapse();
-    } else {
-      expand();
-    }
-  };
 
   const handleOpenAccountsDrawer = () => {
     dispatch(openAccountsDrawer());
@@ -52,8 +38,8 @@ const AddButton = () => {
     dispatch(openTransfersDrawer());
   };
 
-  const handleOpenTransactions = () => {
-    dispatch(openTransactionsDrawer());
+  const handleOpenColorPickerDrawer = () => {
+    dispatch(openColorPickerDrawer());
   };
 
   const expand = () => {
@@ -75,6 +61,16 @@ const AddButton = () => {
     });
   };
 
+  useImperativeHandle(ref, () => ({
+    impeerativeCollapseHandle(action) {
+      if (action === 'collapse') {
+        collapse();
+      } else {
+        expand();
+      }
+    },
+  }));
+
   return (
     <Animated.View
       style={[
@@ -89,7 +85,7 @@ const AddButton = () => {
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
-          bottom: normalize(10),
+          bottom: 0,
         },
       ]}>
       <TouchableOpacity
@@ -145,12 +141,20 @@ const AddButton = () => {
                   color={theme.colors.loginText}
                 />
               </AnimatedButton>
-              <AnimatedButton widthAnimation={widthAnimation}></AnimatedButton>
+              <AnimatedButton
+                widthAnimation={widthAnimation}
+                onPress={handleOpenColorPickerDrawer}>
+                <MI
+                  name="color-lens"
+                  size={iconSize}
+                  color={theme.colors.loginText}
+                />
+              </AnimatedButton>
             </MidRow>
           </AnimatedRow>
           <BottomRow>
             <TouchableOpacity>
-              <Button onPress={handlePress} onLongPress={handleLongPress}>
+              <Button>
                 <MI
                   name="add"
                   size={normalize(width / 10)}
@@ -163,7 +167,7 @@ const AddButton = () => {
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
 
 const AnimatedButton = ({widthAnimation, children, onPress}) => {
   return (

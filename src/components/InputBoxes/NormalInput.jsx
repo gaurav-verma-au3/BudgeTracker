@@ -20,6 +20,7 @@ const NormalInput = props => {
         }}>
         <Text
           style={{
+            fontWeight: theme.fontWeight.w600,
             color: props.error
               ? theme.colors.loginText
               : theme.colors.loginText,
@@ -66,6 +67,7 @@ const TextInputBox = styled.TextInput.attrs(props => ({
   color: ${props =>
     props.error ? props.theme.colors.loginText : props.theme.colors.loginText};
   font-size: ${props => props.theme.fontSize.f12}px;
+  font-weight: ${props => props.theme.fontWeight.w600};
   padding: ${props => props.theme.spacings.verticalScale.s12}px
     ${props => props.theme.spacings.normalScale.s12}px;
   width: 100%;
